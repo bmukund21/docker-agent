@@ -2,44 +2,32 @@ pipeline {
     agent any
     stages {
         stage('Source') {
-            agent {
-                docker { image 'public.ecr.aws/docker/library/maven:3.9-sapmachine' }
-            }
             steps {
-                // Display Maven and Git versions
-                sh 'mvn --version'
-                sh 'git --version'
-
+                // Run Docker container and execute Maven and Git commands inside it
+                sh 'docker run --rm -v "$PWD":/usr/src/mymaven -w /usr/src/mymaven public.ecr.aws/docker/library/maven:3.9-sapmachine mvn --version'
+                sh 'docker run --rm -v "$PWD":/usr/src/mymaven -w /usr/src/mymaven public.ecr.aws/docker/library/maven:3.9-sapmachine git --version'
+                
                 // Checkout source code from Git
                 git branch: 'main',
                     url: 'https://github.com/bmukund21/docker-agent.git'
             }
         }
         stage('Clean') {
-            agent {
-                docker { image 'public.ecr.aws/docker/library/maven:3.9-sapmachine' }
-            }
             steps {
-                // Clean the project
-                sh 'mvn clean'
+                // Clean the project inside Docker container
+                sh 'docker run --rm -v "$PWD":/usr/src/mymaven -w /usr/src/mymaven public.ecr.aws/docker/library/maven:3.9-sapmachine mvn clean'
             }
         }
         stage('Test') {
-            agent {
-                docker { image 'public.ecr.aws/docker/library/maven:3.9-sapmachine' }
-            }
             steps {
-                // Run tests
-                sh 'mvn test'
+                // Run tests inside Docker container
+                sh 'docker run --rm -v "$PWD":/usr/src/mymaven -w /usr/src/mymaven public.ecr.aws/docker/library/maven:3.9-sapmachine mvn test'
             }
         }
         stage('Package') {
-            agent {
-                docker { image 'public.ecr.aws/docker/library/maven:3.9-sapmachine' }
-            }
             steps {
-                // Package the project and skip tests
-                sh 'mvn package -DskipTests'
+                // Package the project inside Docker container, skipping tests
+                sh 'docker run --rm -v "$PWD":/usr/src/mymaven -w /usr/src/mymaven public.ecr.aws/docker/library/maven:3.9-sapmachine mvn package -DskipTests'
             }
         }
     }
