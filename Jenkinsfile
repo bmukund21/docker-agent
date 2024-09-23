@@ -1,9 +1,10 @@
 pipeline {
-    agent {
-        docker { image 'public.ecr.aws/docker/library/maven:3.9-sapmachine' }
-    }
+    agent any
     stages {
         stage('Source') {
+            agent {
+                docker { image 'public.ecr.aws/docker/library/maven:3.9-sapmachine' }
+            }
             steps {
                 // Display Maven and Git versions
                 sh 'mvn --version'
@@ -15,18 +16,27 @@ pipeline {
             }
         }
         stage('Clean') {
+            agent {
+                docker { image 'public.ecr.aws/docker/library/maven:3.9-sapmachine' }
+            }
             steps {
                 // Clean the project
                 sh 'mvn clean'
             }
         }
         stage('Test') {
+            agent {
+                docker { image 'public.ecr.aws/docker/library/maven:3.9-sapmachine' }
+            }
             steps {
                 // Run tests
                 sh 'mvn test'
             }
         }
         stage('Package') {
+            agent {
+                docker { image 'public.ecr.aws/docker/library/maven:3.9-sapmachine' }
+            }
             steps {
                 // Package the project and skip tests
                 sh 'mvn package -DskipTests'
