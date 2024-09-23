@@ -5,31 +5,31 @@ pipeline {
     stages {
         stage('Source') {
             steps {
+                // Display Maven and Git versions
                 sh 'mvn --version'
                 sh 'git --version'
+
+                // Checkout source code from Git
                 git branch: 'main',
-                    url: 'https://github.com/LinkedInLearning/essential-jenkins-2468076.git'
+                    url: 'https://github.com/bmukund21/docker-agent.git'
             }
         }
         stage('Clean') {
             steps {
-                dir("${env.WORKSPACE}/Ch04/04_03-docker-agent"){
-                    sh 'mvn clean'
-                }
+                // Clean the project
+                sh 'mvn clean'
             }
         }
         stage('Test') {
             steps {
-                dir("${env.WORKSPACE}/Ch04/04_03-docker-agent"){
-                    sh 'mvn test'
-                }
+                // Run tests
+                sh 'mvn test'
             }
         }
         stage('Package') {
             steps {
-                dir("${env.WORKSPACE}/Ch04/04_03-docker-agent"){
-                    sh 'mvn package -DskipTests'
-                }
+                // Package the project and skip tests
+                sh 'mvn package -DskipTests'
             }
         }
     }
